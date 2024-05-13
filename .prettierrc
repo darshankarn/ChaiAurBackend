@@ -1,5 +1,5 @@
 {
-    "singleQuote": ,
+    "singleQuote": true,
     "bracketSpacing": true,
     "tabWidth": 2,
     "trailingComma": "es5",
