@@ -9,7 +9,7 @@ const registerUser = asyncHandler( async(req,res) => {
 
     // get user deatils from frontend
     const {username, email, password, fullname } = req.body
-    console.log("email : ", email);
+    console.log("body: ", req.body);
 
     // validation - not empty
 
@@ -33,6 +33,9 @@ const registerUser = asyncHandler( async(req,res) => {
     // check for image - avatar
     const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    console.log("files: ", req.files);
+
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage)
 
     if(!avatarLocalPath){
         throw new ApiError(400,"avatar is required");
