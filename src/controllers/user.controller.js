@@ -81,7 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     username: username.toLowerCase(),
     password,
-  });
+  }); 
 
   // remove password and refresh token field from response
   const createdUser = await User.findById(user._id).select(
@@ -101,7 +101,6 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   // get email or username and password from user
   const { email, username, password } = req.body;
-  console.log(req.body);
 
   if (!(username || email)) {
     throw new ApiError(400, 'username or email is required');
@@ -157,8 +156,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -198,7 +197,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
     if (user.refreshToken !== incomingRefreshToken) {
-      throw new ApiError(401, 'Irefreshtoken is expired or used');
+      throw new ApiError(401, 'refreshtoken is expired or used');
     }
 
     const options = {
@@ -220,7 +219,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             accessToken,
             refreshToken,
           },
-          'Access TOken is refreshed'
+          'Access Token is refreshed'
         )
       );
   } catch (error) {
@@ -294,7 +293,6 @@ const updateUserAvatar = asyncHandler( async(req,res) => {
     if(!avatar.url){
         throw new ApiError(500,"avatar is not uploaded to cloudinary");
     }
-
     // get user by req.user and update avatar to new clodinary url
     const user = await User.findByIdAndUpdate(req.user?._id,
         {
@@ -306,7 +304,9 @@ const updateUserAvatar = asyncHandler( async(req,res) => {
         }
     ).select("-password")
 
-    // TODO : Delete old avatar from cloudinary
+    // TODO : Delete old avatar from cloudinary 
+    // for this we have to store the public id of all image. we cann't delete from cloudinary by url
+
 
     return res.status(200).json(
         new ApiResponse(200,user,"Avatar is updated successfully")
@@ -474,7 +474,7 @@ const getWatchHistory = asyncHandler( async(req,res) => {
 export {
   registerUser,
   loginUser,
-  logoutUser,
+  logoutUser, 
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
